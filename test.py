@@ -3,6 +3,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import smtplib#导入smtp模块
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.header import Header 
+
+#smtp的服务类型，我的是QQ，其他比如136邮箱可改成smtp.136.com,或者谷歌邮箱smtp.gmail.com
+SMTP_SERVER = 'smtp.qq.com'
+#这个端口一般没什么问题所有邮箱都是25，谷歌的587也可以
+SMTP_PORT = 465
+#自己的qq邮箱，如果你是136的话可以改成xxxxxx@136.com
+QQMAIL_USER = 'yourqq@qq.com'
+#smtp服务的授权码，根据上面的操作就可以获得
+QQMAIL_PASS = 'yourQQmailPass'
+
+
+
+
 # 启动浏览器（这里以 Chrome 为例，确保你已经下载了 ChromeDriver）
 driver = webdriver.Chrome()
 
@@ -39,6 +57,20 @@ medical_exam_check.click()
 chest_x_ray_check.click()
 serum_check.click()
 next_button2.click()
+
+
+#需要填写 recipient,subject,和邮件内容，recipient为收件人的邮箱地址。，text为邮件内容
+def send_email(recipient,subject,text):
+    smtpserver = smtplib.SMTP_SSL(SMTP_SERVER,465)
+    smtpserver.login(QQMAIL_USER,QQMAIL_PASS)
+    msg = MIMEText(text, 'plain', 'utf-8')
+    msg['Subject'] = Header(subject, 'utf-8')
+    msg['From'] = QQMAIL_USER
+    msg['To'] = recipient
+
+    smtpserver.sendmail(QQMAIL_USER,recipient,msg)
+    smtpserver.quit()
+
 
 #查看是否有空位
 status_text = driver.find_element(By.ID,"ContentPlaceHolder1_SelectTime1_divNoAvailSlots").text
