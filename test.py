@@ -40,6 +40,14 @@ chest_x_ray_check.click()
 serum_check.click()
 next_button2.click()
 
+#查看是否有空位
+status_text = driver.find_element(By.ID,"ContentPlaceHolder1_SelectTime1_divNoAvailSlots").text
+print(status_text)
+if 'no available' in status_text:
+    print("no!")
+else:
+    print("yes!")
+
 
 
 
